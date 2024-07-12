@@ -144,6 +144,37 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
 }
 
 
+// ProjectItem class
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+    private project: Project
+
+    get persons() {
+        if (this.project.people === 1) {
+            return '1 person'
+        } else {
+            return `${this.project.people} persons`
+        }
+    }
+
+    constructor(hostId: string, project: Project) {
+        super('single-project', hostId, false, project.id )
+        this.project = project; 
+
+        
+    this.configure();
+    this.renderContent();
+    }
+
+    configure() {}
+
+    renderContent() {
+        this.element.querySelector('h2')!.textContent = this.project.title;
+        this.element.querySelector('h3')!.textContent = this.persons + ' assigned';
+        this.element.querySelector('p')!.textContent = this.project.description;
+    }
+
+}
+
 
 // ProjectList class
 class ProjectList extends Component<HTMLDivElement, HTMLElement>  {
@@ -182,9 +213,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement>  {
         const listEl = document.getElementById(`${this.type}-projects-list`) as HTMLUListElement;
         listEl.innerHTML = '';
         for (const prjEl of this.assignedProjects) {
-            const listItem = document.createElement('li');
-            listItem.textContent = prjEl.title
-            listEl?.appendChild(listItem);
+            new ProjectItem(this.element.querySelector('ul')!.id, prjEl);
         }
     }
 
@@ -230,7 +259,7 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
     const peopleValidatable: Validatable = {
         value: +enteredPeople,
         required: true,
-        min: 1,
+        min: 0,
         max: 5
     }  
 
