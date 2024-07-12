@@ -20,9 +20,17 @@ class Project {
         this.status = status;
     }
 }
-class ProjectState {
+class State {
     constructor() {
         this.listeners = [];
+    }
+    addListener(listenerFn) {
+        this.listeners.push(listenerFn);
+    }
+}
+class ProjectState extends State {
+    constructor() {
+        super();
         this.projects = [];
     }
     static getInstance() {
@@ -33,9 +41,6 @@ class ProjectState {
             this.instance = new ProjectState();
             return this.instance;
         }
-    }
-    addListener(listenerFn) {
-        this.listeners.push(listenerFn);
     }
     addProject(title, description, numOfPeople) {
         const newProject = new Project(Math.random().toString(), title, description, numOfPeople, ProjectStatus.Active);
@@ -82,15 +87,32 @@ function Autobind(_, _2, descriptor) {
     };
     return adjDescriptor;
 }
-// ProjectList class
-class ProjectList {
-    constructor(type) {
-        this.type = type;
-        this.templateEl = document.getElementById('project-list');
-        this.hostEl = document.getElementById('app');
+// Component base class
+class Component {
+    constructor(temlplateId, hostElId, insertAtStart, newElId) {
+        this.templateEl = document.getElementById(temlplateId);
+        this.hostEl = document.getElementById(hostElId);
         const importedNode = document.importNode(this.templateEl.content, true);
         this.element = importedNode.firstElementChild;
-        this.element.id = `${type}-projects`;
+        if (newElId) {
+            this.element.id = newElId;
+        }
+        this.attach(insertAtStart);
+    }
+    attach(insertAtBeginning) {
+        this.hostEl.insertAdjacentElement(insertAtBeginning ? 'afterbegin' : 'beforeend', this.element);
+    }
+}
+// ProjectList class
+class ProjectList extends Component {
+    constructor(type) {
+        super('project-list', 'app', false, `${type}-projects`);
+        this.type = type;
+        this.assignedProjects = [];
+        this.configure();
+        this.renderContent();
+    }
+    configure() {
         projectState.addListener((projects) => {
             const relevantProjects = projects.filter(prj => {
                 if (this.type === 'active') {
@@ -101,8 +123,11 @@ class ProjectList {
             this.assignedProjects = relevantProjects;
             this.renderProject();
         });
-        this.attach();
-        this.renderContent();
+    }
+    renderContent() {
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector('ul').id = listId;
+        this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' PROJECTS';
     }
     renderProject() {
         const listEl = document.getElementById(`${this.type}-projects-list`);
@@ -113,33 +138,15 @@ class ProjectList {
             listEl === null || listEl === void 0 ? void 0 : listEl.appendChild(listItem);
         }
     }
-    renderContent() {
-        const listId = `${this.type}-projects-list`;
-        this.element.querySelector('ul').id = listId;
-        this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' PROJECTS';
-    }
-    attach() {
-        this.hostEl.insertAdjacentElement('beforeend', this.element);
-    }
 }
 // Project Input class
-class ProjectInput {
+class ProjectInput extends Component {
     constructor() {
-        this.templateEl = document.getElementById('project-input');
-        this.hostEl = document.getElementById('app');
-        const importedNode = document.importNode(this.templateEl.content, true);
-        this.element = importedNode.firstElementChild;
-        this.element.id = 'user-input';
+        super('project-input', 'app', true, 'user-input');
         this.titleInputEl = this.element.querySelector('#title');
         this.descriptionInputEl = this.element.querySelector('#description');
         this.peopleInputEl = this.element.querySelector('#people');
         this.configure();
-        if (this.element) {
-            this.attach();
-        }
-        else {
-            console.log('The template content does not contain a form element.');
-        }
     }
     gatherUserInput() {
         const enteredTitle = this.titleInputEl.value;
@@ -188,9 +195,7 @@ class ProjectInput {
     configure() {
         this.element.addEventListener('submit', this.submitHandler);
     }
-    attach() {
-        this.hostEl.insertAdjacentElement('afterbegin', this.element);
-    }
+    renderContent() { }
 }
 __decorate([
     Autobind
