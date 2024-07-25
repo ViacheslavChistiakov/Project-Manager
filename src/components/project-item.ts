@@ -1,8 +1,8 @@
 
-import  Component  from "./base-component.js";
-import { Druggable } from "../models/drugg-druggable.js";
-import  Autobind  from "../decoraters/autobind.js";
-import { Project } from '../state/state.js';
+import  Component  from "./base-component";
+import { Druggable } from "../models/drugg-druggable";
+import  Autobind  from "../decoraters/autobind";
+import { Project } from '../state/state';
 
 // ProjectItem class
 export class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements Druggable{

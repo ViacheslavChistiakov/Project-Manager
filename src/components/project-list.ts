@@ -1,11 +1,11 @@
 
-import  Autobind  from "../decoraters/autobind.js";
-import { Dragtarget } from "../models/drugg-druggable.js";
-import { Project } from '../state/state.js';
-import { projectState } from "../state/state.js";
-import { ProjectStatus } from "../models/status.js"
-import  Component  from "./base-component.js";
-import { ProjectItem } from "./project-item.js";
+import  Autobind  from "../decoraters/autobind";
+import { Dragtarget } from "../models/drugg-druggable";
+import { Project } from '../state/state';
+import { projectState } from "../state/state";
+import { ProjectStatus } from "../models/status"
+import  Component  from "./base-component";
+import { ProjectItem } from "./project-item";
 
 
     // ProjectList class
