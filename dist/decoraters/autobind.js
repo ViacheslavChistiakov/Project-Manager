@@ -1,5 +1,5 @@
 // Autobin decorater
-export default function Autobind(_: any, _2: string | Symbol, descriptor: PropertyDescriptor) {
+export default function Autobind(_, _2, descriptor) {
     const originDescriptor = descriptor.value;
     const adjDescriptor = {
         configurable: true,
@@ -8,6 +8,7 @@ export default function Autobind(_: any, _2: string | Symbol, descriptor: Proper
             const buttonBind = originDescriptor.bind(this);
             return buttonBind;
         }
-    }
+    };
     return adjDescriptor;
 }
+//# sourceMappingURL=autobind.js.map

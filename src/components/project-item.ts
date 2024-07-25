@@ -1,8 +1,10 @@
-/// <reference path="base-component.ts"/>
-/// <reference path="../decoraters/autobind.ts"/>
 
-namespace App {
-    // ProjectItem class
+import  Component  from "./base-component.js";
+import { Druggable } from "../models/drugg-druggable.js";
+import  Autobind  from "../decoraters/autobind.js";
+import { Project } from '../state/state.js';
+
+// ProjectItem class
 export class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements Druggable{
     private project: Project
 
@@ -45,4 +47,3 @@ export class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> impl
 
 }
 
-}
